@@ -36,6 +36,12 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+.pnpm-store
+/.vscode
+/.env
+.env.local
+*.log
+coverage
 
 # System files
 .DS_Store
