@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
         apiLoggingInterceptor,
         errorHandlingInterceptor,
         jwtInterceptor,
-      ])
+      ]),
     ),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,

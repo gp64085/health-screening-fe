@@ -1,12 +1,25 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 import { MessageService } from 'primeng/api';
 
-export const adminGuard: CanActivateFn = (_route, _state) => {
+export const adminGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _state: RouterStateSnapshot,
+) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const messageService = inject(MessageService);
+
+  console.log(
+    `adminGuard: Checking if user is admin. User: ${authService.getCurrentUser()?.email} is trying to access ${route.data?.['title']}`,
+  );
 
   if (authService.isLoggedIn() && authService.isAdmin()) {
     return true;

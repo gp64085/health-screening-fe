@@ -42,6 +42,7 @@ testem.log
 .env.local
 *.log
 coverage
+.qodo
 
 # System files
 .DS_Store

@@ -8,7 +8,7 @@
  */
 export function forNext<T>(
   array: T[],
-  callback: (item: T, index: number, array: T[]) => void
+  callback: (item: T, index: number, array: T[]) => void,
 ): void {
   if (!array || !Array.isArray(array)) {
     return;
@@ -32,7 +32,7 @@ export function forNext<T>(
  */
 export function mapNext<T, U>(
   array: T[],
-  callback: (item: T, index: number, array: T[]) => U
+  callback: (item: T, index: number, array: T[]) => U,
 ): U[] {
   if (!array || !Array.isArray(array)) {
     return [];
@@ -57,7 +57,7 @@ export function mapNext<T, U>(
  */
 export function filterNext<T>(
   array: T[],
-  callback: (item: T, index: number, array: T[]) => boolean
+  callback: (item: T, index: number, array: T[]) => boolean,
 ): T[] {
   if (!array || !Array.isArray(array)) {
     return [];

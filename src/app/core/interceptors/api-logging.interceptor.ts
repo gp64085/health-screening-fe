@@ -18,21 +18,22 @@ export const apiLoggingInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     tap({
-      next: _event => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      next: (_event) => {
         const endTime = Date.now();
         const duration = endTime - startTime;
         console.log(
-          `API Response: ${req.method} ${req.url} completed in ${duration}ms`
+          `API Response: ${req.method} ${req.url} completed in ${duration}ms`,
         );
       },
-      error: error => {
+      error: (error) => {
         const endTime = Date.now();
         const duration = endTime - startTime;
         console.error(
           `API Error: ${req.method} ${req.url} failed in ${duration}ms`,
-          error
+          error,
         );
       },
-    })
+    }),
   );
 };

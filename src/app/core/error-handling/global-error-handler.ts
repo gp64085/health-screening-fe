@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 export class GlobalErrorHandler implements ErrorHandler {
   constructor(
     private messageService: MessageService,
-    private zone: NgZone
+    private zone: NgZone,
   ) {}
 
   handleError(error: HttpErrorResponse): void {

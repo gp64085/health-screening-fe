@@ -21,27 +21,29 @@ export class AuthService {
 
   private loadStoredUser(): void {
     const token = this.getToken();
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
+    if (!token) {
+      return;
+    }
 
-        // Check if token is expired
-        const currentTime = Date.now() / 1000;
-        if (decodedToken.exp && decodedToken.exp < currentTime) {
-          this.logout();
-          return;
-        }
+    try {
+      const decodedToken = jwtDecode(token);
 
-        // Set the current user from token data
-        this.currentUserSubject.next({
-          id: decodedToken.sub,
-          email: decodedToken.email,
-          fullName: decodedToken.name,
-          role: decodedToken.role,
-        });
-      } catch (error) {
+      // Check if token is expired
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
         this.logout();
+        return;
       }
+
+      // Set the current user from token data
+      this.currentUserSubject.next({
+        id: decodedToken.sub,
+        email: decodedToken.email,
+        fullName: decodedToken.name,
+        role: decodedToken.role,
+      });
+    } catch (error) {
+      this.logout();
     }
   }
 
@@ -52,19 +54,19 @@ export class AuthService {
         password,
       })
       .pipe(
-        tap(response => {
+        tap((response) => {
           this.storeToken(response.token);
           this.currentUserSubject.next(response.user);
         }),
-        map(response => response.user),
-        catchError(error => {
+        map((response) => response.user),
+        catchError((error) => {
           return throwError(
             () =>
               new Error(
-                `Login failed: ${error.error?.message || 'Unknown error'}`
-              )
+                `Login failed: ${error.error?.message || 'Unknown error'}`,
+              ),
           );
-        })
+        }),
       );
   }
 
@@ -75,39 +77,39 @@ export class AuthService {
         dob,
       })
       .pipe(
-        tap(response => {
+        tap((response) => {
           this.storeToken(response.token);
           this.currentUserSubject.next(response.user);
         }),
-        map(response => response.user),
-        catchError(error => {
+        map((response) => response.user),
+        catchError((error) => {
           return throwError(
             () =>
               new Error(
-                `Login failed: ${error.error?.message || 'Unknown error'}`
-              )
+                `Login failed: ${error.error?.message || 'Unknown error'}`,
+              ),
           );
-        })
+        }),
       );
   }
 
-  register(userData: any): Observable<User> {
+  register(userData: User): Observable<User> {
     return this.http
       .post<AuthResponse>(`${environment.apiUrl}/auth/register`, userData)
       .pipe(
-        tap(response => {
+        tap((response) => {
           this.storeToken(response.token);
           this.currentUserSubject.next(response.user);
         }),
-        map(response => response.user),
-        catchError(error => {
+        map((response) => response.user),
+        catchError((error) => {
           return throwError(
             () =>
               new Error(
-                `Registration failed: ${error.error?.message || 'Unknown error'}`
-              )
+                `Registration failed: ${error.error?.message || 'Unknown error'}`,
+              ),
           );
-        })
+        }),
       );
   }
 
@@ -146,7 +148,7 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${environment.apiUrl}/auth/refresh-token`, {})
       .pipe(
-        tap(response => {
+        tap((response) => {
           this.storeToken(response.token);
           this.currentUserSubject.next(response.user);
         }),
@@ -154,7 +156,7 @@ export class AuthService {
         catchError(() => {
           this.logout();
           return of(false);
-        })
+        }),
       );
   }
 }
