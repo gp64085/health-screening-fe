@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://via.placeholder.com/600x120?text=Health+Screening+App" alt="Health Screening App Logo"/>
   
-  <h1>🚦 Health Screening App 🚦</h1>
+  <h1>🩺 Health Screening App 🩺</h1>
   <p>QR-based health screening for safe public entry</p>
   
   <p>
