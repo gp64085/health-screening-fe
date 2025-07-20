@@ -1,8 +1,10 @@
-import { UserRole } from '../types';
+import type { UserRole } from '../enums';
 
 export interface User {
   id?: string;
   email: string;
-  fullName: string;
-  role: UserRole;
+  name: string;
+  mobile?: string;
+  role?: UserRole;
+  password?: string;
 }

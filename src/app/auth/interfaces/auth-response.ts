@@ -1,4 +1,4 @@
-import { User } from '../../core/interfaces/user';
+import type { User } from '../../core/interfaces/user';
 
 export interface AuthResponse {
   token: string;

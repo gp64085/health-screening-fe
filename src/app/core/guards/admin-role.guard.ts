@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
+  type ActivatedRouteSnapshot,
+  type CanActivateFn,
   Router,
-  RouterStateSnapshot,
+  type RouterStateSnapshot,
 } from '@angular/router';
-import { AuthService } from '../../auth/services/auth.service';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '../../auth/services/auth.service';
 
 export const adminGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
