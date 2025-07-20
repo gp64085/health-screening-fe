@@ -69,12 +69,18 @@ export class LoginComponent implements OnInit {
 
   onSubmit(formData: Record<string, unknown>): void {
     if (notMissing(formData)) {
-      this.authService.login(formData as unknown as LoginForm).subscribe({
+      const loginData: LoginForm = {
+        email: formData['email'] as string,
+        password: formData['password'] as string,
+      };
+
+      this.authService.login(loginData).subscribe({
         next: (user) => {
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          console.error('Login failed', error);
+          console.error('Login failed:', error);
+          // TODO: Show user-friendly error message
         },
       });
     }
