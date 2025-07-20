@@ -36,6 +36,5 @@ button,
 }
 
 .p-error {
-  @apply block text-sm text-red-500;
-  margin-left: -120px;
+  @apply block text-sm text-red-500 mt-1;
 }
