@@ -1,12 +1,12 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandler, Injectable, NgZone } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import type { HttpErrorResponse } from '@angular/common/http';
+import { type ErrorHandler, Injectable, type NgZone } from '@angular/core';
+import type { MessageService } from 'primeng/api';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   constructor(
-    private messageService: MessageService,
-    private zone: NgZone,
+    private readonly messageService: MessageService,
+    private readonly zone: NgZone
   ) {}
 
   handleError(error: HttpErrorResponse): void {

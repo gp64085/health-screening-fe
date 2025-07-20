@@ -1,9 +1,12 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import type {
+  HttpErrorResponse,
+  HttpInterceptorFn,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export const errorHandlingInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
@@ -49,6 +52,6 @@ export const errorHandlingInterceptor: HttpInterceptorFn = (req, next) => {
       });
 
       return throwError(() => new Error(errorMessage));
-    }),
+    })
   );
 };

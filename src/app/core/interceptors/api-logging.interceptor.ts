@@ -1,4 +1,4 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import type { HttpInterceptorFn } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 
 /**
@@ -23,7 +23,7 @@ export const apiLoggingInterceptor: HttpInterceptorFn = (req, next) => {
         const endTime = Date.now();
         const duration = endTime - startTime;
         console.log(
-          `API Response: ${req.method} ${req.url} completed in ${duration}ms`,
+          `API Response: ${req.method} ${req.url} completed in ${duration}ms`
         );
       },
       error: (error) => {
@@ -31,9 +31,9 @@ export const apiLoggingInterceptor: HttpInterceptorFn = (req, next) => {
         const duration = endTime - startTime;
         console.error(
           `API Error: ${req.method} ${req.url} failed in ${duration}ms`,
-          error,
+          error
         );
       },
-    }),
+    })
   );
 };
