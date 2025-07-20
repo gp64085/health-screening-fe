@@ -189,7 +189,9 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
         this.form.reset();
       }
     } else {
-      console.log(this.form.value);
+     } else {
+       this.form.markAllAsTouched();
+     }
       this.form.markAllAsTouched();
     }
   }
