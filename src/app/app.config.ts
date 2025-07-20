@@ -1,9 +1,7 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
-  APP_INITIALIZER,
   type ApplicationConfig,
   ErrorHandler,
-  importProvidersFrom,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -32,7 +30,7 @@ export const appConfig: ApplicationConfig = {
         apiLoggingInterceptor,
         errorHandlingInterceptor,
         jwtInterceptor,
-      ])
+      ]),
     ),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,

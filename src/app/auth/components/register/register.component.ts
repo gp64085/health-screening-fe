@@ -103,9 +103,7 @@ export class RegisterComponent {
           password: userData?.password ?? '',
         })
         .subscribe({
-          next: (user) => {
-            this.router.navigate(['/login']);
-          },
+          next: () => this.router.navigate(['/login']),
           error: (error) => {
             console.error('Registration failed:', error);
           },

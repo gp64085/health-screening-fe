@@ -26,23 +26,26 @@
         </p-inputNumber>
 
         <!-- Dropdown Field -->
-        <p-dropdown
+        <p-select
           *ngIf="field.type === 'dropdown'"
           [id]="field.name"
           [formControlName]="field.name"
           [options]="field.options || []"
           [class]="field.styleClass || ''"
           class="form-control">
-        </p-dropdown>
+        </p-select>
 
         <!-- Calendar Field -->
-        <p-calendar
+        <p-datepicker
           *ngIf="field.type === 'calendar'"
           [id]="field.name"
           [formControlName]="field.name"
           [class]="field.styleClass || ''"
-          class="form-control">
-        </p-calendar>
+          class="form-control"
+          [dateFormat]="field.dateFormat || 'mm/dd/yyyy'"
+          [hourFormat]="field.hourFormat || '12'"
+          >
+        </p-datepicker>
 
         <!-- Checkbox Field -->
         <p-checkbox
@@ -54,14 +57,14 @@
         </p-checkbox>
 
         <!-- Multi Select Field -->
-        <p-multiSelect
+        <p-multiselect
           *ngIf="field.type === 'multiSelect'"
           [id]="field.name"
           [formControlName]="field.name"
           [options]="field.options || []"
           [class]="field.styleClass || ''"
           class="form-control">
-        </p-multiSelect>
+        </p-multiselect>
       </p-floatlabel>
       <p-floatlabel variant="on" *ngIf="field.type === 'password'">
         <p-password

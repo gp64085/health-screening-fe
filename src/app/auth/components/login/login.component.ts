@@ -75,9 +75,7 @@ export class LoginComponent implements OnInit {
       };
 
       this.authService.login(loginData).subscribe({
-        next: (user) => {
-          this.router.navigate(['/dashboard']);
-        },
+        next: () => this.router.navigate(['/dashboard']),
         error: (error) => {
           console.error('Login failed:', error);
           // TODO: Show user-friendly error message

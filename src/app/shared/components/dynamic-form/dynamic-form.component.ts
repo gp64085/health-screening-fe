@@ -1,19 +1,14 @@
-import {
-  NgClass,
-  NgFor,
-  NgIf,
-  TitleCasePipe,
-  UpperCasePipe,
-} from '@angular/common';
+import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   type OnInit,
   Output,
 } from '@angular/core';
 import {
-  type FormBuilder,
+  FormBuilder,
   type FormGroup,
   ReactiveFormsModule,
   type ValidatorFn,
@@ -22,32 +17,30 @@ import {
 import { isMissing, notMissing } from '@app/shared/utils';
 import {
   type FormConfig,
-  FormData,
   type FormFieldConfig,
 } from '@app/shared/utils/form-config.model';
-import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
-import { FloatLabel } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { PasswordModule } from 'primeng/password';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
+import { FloatLabel } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-dynamic-form',
   imports: [
     NgIf,
     NgFor,
-    NgClass,
     ReactiveFormsModule,
     InputTextModule,
     InputNumberModule,
-    DropdownModule,
-    CalendarModule,
-    CheckboxModule,
+    SelectModule,
     MultiSelectModule,
+    DatePickerModule,
+    CheckboxModule,
     ButtonModule,
     FloatLabel,
     PasswordModule,
@@ -64,8 +57,9 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   >();
 
   form: FormGroup;
+  private readonly formBuilder = inject(FormBuilder);
 
-  constructor(private readonly formBuilder: FormBuilder) {
+  constructor() {
     this.form = this.formBuilder.group({});
   }
 
@@ -81,8 +75,8 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
         field.name,
         this.formBuilder.control(
           field.value ?? null, // Handle value conversion
-          this.getValidators(field)
-        )
+          this.getValidators(field),
+        ),
       );
 
       // Set disabled state if needed
@@ -122,6 +116,10 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
 
       if (notMissing(field.validation.pattern)) {
         validators.push(Validators.pattern(field.validation.pattern?.value));
+      }
+
+      if (notMissing(field.validation?.email)) {
+        validators.push(Validators.email);
       }
 
       // TODO: implement custom validator
@@ -189,9 +187,6 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
         this.form.reset();
       }
     } else {
-     } else {
-       this.form.markAllAsTouched();
-     }
       this.form.markAllAsTouched();
     }
   }

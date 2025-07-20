@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { UserRole } from '@app/core/enums';
 import type { ApiResponse } from '@app/core/interfaces/api-response';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, type Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { environment } from '../../../enviroments/environment';
+import { environment } from '../../../environments/environment';
 import type { User } from '../../core/interfaces/user';
 import type { AuthResponse } from '../interfaces/auth-response';
 import type { IJwtPayload, LoginForm } from '../utils';
@@ -48,6 +47,7 @@ export class AuthService {
       });
     } catch (error) {
       this.logout();
+      console.error('Failed to decode token:', error);
     }
   }
 
@@ -55,7 +55,7 @@ export class AuthService {
     return this.http
       .post<ApiResponse<AuthResponse>>(
         `${environment.apiUrl}/auth/login`,
-        loginFormData
+        loginFormData,
       )
       .pipe(
         tap((response) => {
@@ -67,10 +67,10 @@ export class AuthService {
           return throwError(
             () =>
               new Error(
-                `Login failed: ${error.error?.message || 'Unknown error'}`
-              )
+                `Login failed: ${error.error?.message || 'Unknown error'}`,
+              ),
           );
-        })
+        }),
       );
   }
 
@@ -90,10 +90,10 @@ export class AuthService {
           return throwError(
             () =>
               new Error(
-                `Login failed: ${error.error?.message || 'Unknown error'}`
-              )
+                `Login failed: ${error.error?.message || 'Unknown error'}`,
+              ),
           );
-        })
+        }),
       );
   }
 
@@ -101,7 +101,7 @@ export class AuthService {
     return this.http
       .post<ApiResponse<AuthResponse>>(
         `${environment.apiUrl}/auth/register`,
-        userData
+        userData,
       )
       .pipe(
         tap((response) => {
@@ -113,10 +113,10 @@ export class AuthService {
           return throwError(
             () =>
               new Error(
-                `Registration failed: ${error.error?.message || 'Unknown error'}`
-              )
+                `Registration failed: ${error.error?.message || 'Unknown error'}`,
+              ),
           );
-        })
+        }),
       );
   }
 
@@ -163,7 +163,7 @@ export class AuthService {
         catchError(() => {
           this.logout();
           return of(false);
-        })
+        }),
       );
   }
 }
