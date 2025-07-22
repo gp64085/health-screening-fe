@@ -35,7 +35,7 @@
     "@primeng/themes": "^18.0.0-rc.1",
     "@tailwindcss/postcss": "^4.0.8",
     "@zxing/browser": "^0.1.4",
-    "@zxing/library": "^0.20.0",
+    "@zxing/library": "^0.21.3",
     "@zxing/ngx-scanner": "^3.9.1",
     "chart.js": "^4.4.2",
     "jwt-decode": "^4.0.0",
