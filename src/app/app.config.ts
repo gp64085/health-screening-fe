@@ -1,7 +1,6 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   type ApplicationConfig,
-  ErrorHandler,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -10,7 +9,6 @@ import Aura from '@primeng/themes/aura';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
-import { GlobalErrorHandler } from './core/error-handling/global-error-handler';
 import { apiLoggingInterceptor } from './core/interceptors/api-logging.interceptor';
 import { errorHandlingInterceptor } from './core/interceptors/error-handling.interceptor';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
@@ -23,6 +21,9 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
+        options: {
+          darkModeSelector: '.app-dark-mode',
+        },
       },
     }),
     provideHttpClient(
@@ -32,7 +33,6 @@ export const appConfig: ApplicationConfig = {
         jwtInterceptor,
       ]),
     ),
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,
   ],
 };

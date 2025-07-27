@@ -12,14 +12,8 @@
     "format": "biome format --write",
     "format:check": "biome format --check ./src",
     "check": "biome check --write",
-    "prepare": "husky",
     "validate": "run-s format:check lint",
-    "e2e": "ng e2e",
-    "lint-staged": {
-  "*.{ts,js,html,json,scss}": [
-    "biome check --apply"
-  ]
-}
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -56,9 +50,6 @@
     "@types/node": "^20.11.30",
     "autoprefixer": "^10.4.21",
     "htmlhint": "^1.1.4",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
-    "npm-run-all": "^4.1.5",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
     "typescript": "~5.5.2"
