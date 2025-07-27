@@ -14,8 +14,6 @@ $bg-color-dark: theme('colors.gray.100'); /* #f3f4f6 */
 $bg-color-light: theme('colors.white'); /* #ffffff */
 $text-color: theme('colors.gray.900'); /* #1e293b */
 
-$disabled-opacity: 0.5;
-
 :root {
   --p-button-padding-x: 1.5rem !important;
   --p-button-padding-y: 1.2rem !important;
@@ -42,15 +40,15 @@ button,
   background: $primary-color !important;
 
   &:hover {
-    background: $primary-color-dark !important;
+    background: $primary-color !important;
   }
 
   &.p-button-primary {
-    @apply hover:bg-blue-700;
+    @apply hover:bg-blue-600;
   }
 
   &.p-button-secondary {
-    @apply bg-gray-600 hover:bg-gray-700;
+    @apply hover:bg-emerald-600;
     background: $secondary !important;
   }
 
