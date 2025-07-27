@@ -21,6 +21,15 @@
           (formSubmit)="onSubmit($event)"
           class="w-full">
         </app-dynamic-form>
+        <div class="text-center mt-4">
+          <p class="text-sm text-gray-600">
+            Don't have an account? 
+            <a
+              (click)="goToRegister()"
+              class="text-blue-500 hover:underline cursor-pointer">
+              Register here
+            </a>
+          </p>
       </div>
     </div>
   </div>

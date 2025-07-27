@@ -1,9 +1,31 @@
 @import 'tailwindcss';
 
+// Colors
+$primary-color: theme('colors.blue.500'); /* #2563eb */
+$primary-color-dark: theme('colors.blue.600'); /* #1d4ed8 */
+$primary-color-light: theme('colors.blue.300'); /* #93c5fd */
+$secondary: theme('colors.emerald.500');  /* #10b981 */
+$secondary-dark: theme('colors.emerald.600'); /* #059669 */
+$danger: theme('colors.red.500');     /* #ef4444 */
+$warning: theme('colors.amber.500');    /* #f59e0b */
+$success: theme('colors.green.500');    /* #10b981 */
+$bg-color: theme('colors.gray.50'); /* #f8fafc */
+$bg-color-dark: theme('colors.gray.100'); /* #f3f4f6 */
+$bg-color-light: theme('colors.white'); /* #ffffff */
+$text-color: theme('colors.gray.900'); /* #1e293b */
+
+$disabled-opacity: 0.5;
+
 :root {
   --p-button-padding-x: 1.5rem !important;
   --p-button-padding-y: 1.2rem !important;
-  @apply bg-green-50;
+  --p-button-border-radius: 0.5rem !important;
+  --p-button-font-size: 1rem !important;
+}
+
+body {
+  background-color: $bg-color-light !important;
+  color: $text-color !important;
 }
 
 .field-container {
@@ -17,13 +39,19 @@
 button,
 .p-button {
   @apply w-32 h-8 text-white rounded-2xl font-medium shadow-md;
+  background: $primary-color !important;
+
+  &:hover {
+    background: $primary-color-dark !important;
+  }
 
   &.p-button-primary {
-    @apply bg-blue-600 hover:bg-blue-700;
+    @apply hover:bg-blue-700;
   }
 
   &.p-button-secondary {
     @apply bg-gray-600 hover:bg-gray-700;
+    background: $secondary !important;
   }
 
   &:disabled {

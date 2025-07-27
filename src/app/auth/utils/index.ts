@@ -1,4 +1,4 @@
-import type { UserRole } from '@app/core/types';
+import type { UserRole } from '@app/core/enums';
 import type { JwtPayload } from 'jwt-decode';
 
 export interface IJwtPayload extends JwtPayload {

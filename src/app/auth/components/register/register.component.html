@@ -9,7 +9,6 @@
           src="/images/signup.gif"
           alt="Register"
           class="w-full h-full object-cover" />
-        <!-- style="min-height: 200px; max-height: 400px;"> -->
       </div>
 
       <!-- Form Section - Always full width of its container -->
@@ -23,6 +22,8 @@
           (formSubmit)="onFormSubmit($event)"
           class="w-full">
         </app-dynamic-form>
+        <p class="text-center text-sm text-gray-600 mt-4">
+          Already have an account? <a (click)="goToLogin()" class="text-blue-500 hover:underline cursor-pointer">Login</a>
       </div>
     </div>
   </div>
