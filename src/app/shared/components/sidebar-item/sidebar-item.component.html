@@ -1,0 +1,38 @@
+<li>
+  @if (menuItem.children && menuItem.children.length > 0) {<!-- Parent menu item with children -->
+  <div class="mb-2">
+    <div class="flex items-center gap-3 p-3 rounded-lg text-gray-300">
+      <i [class]="[menuItem.icon, 'text-lg', 'min-w-6']"></i>
+      @if (!isCollapsed) {<span class="whitespace-nowrap font-medium">{{ menuItem.label }}</span>}
+    </div>
+    <!-- Child menu items -->
+    @if (!isCollapsed) {
+    <ul class="ml-6 mt-2 space-y-1">
+      @for (child of menuItem.children; track child.label) {
+      <li>
+        <a
+          [routerLink]="child.route"
+          routerLinkActive="bg-blue-600 text-white"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700 transition-colors text-sm"
+        >
+          <i [class]="[child.icon, 'text-sm', 'min-w-4']"></i>
+          <span class="whitespace-nowrap">{{ child.label }}</span>
+        </a>
+      </li>
+      }
+    </ul>
+    }
+  </div>
+  } @else {<!-- Single menu item -->
+  <a
+    [routerLink]="menuItem.route"
+    routerLinkActive="bg-blue-600 text-white"
+    [routerLinkActiveOptions]="{ exact: false }"
+    class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition-colors"
+  >
+    <i [class]="[menuItem.icon, 'text-lg', 'min-w-6']"></i>
+    @if (!isCollapsed) {<span class="whitespace-nowrap">{{ menuItem.label }}</span>}
+  </a>
+  }
+</li>

@@ -1,17 +1,17 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManageQuestionsComponent } from './manage-questions.component';
+import { SidebarComponent } from './sidebar.component';
 
-describe('ManageQuestionsComponent', () => {
-  let component: ManageQuestionsComponent;
-  let fixture: ComponentFixture<ManageQuestionsComponent>;
+describe('SidebarComponent', () => {
+  let component: SidebarComponent;
+  let fixture: ComponentFixture<SidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ManageQuestionsComponent],
+      imports: [SidebarComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ManageQuestionsComponent);
+    fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
