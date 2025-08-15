@@ -8,8 +8,8 @@
         <img
           src="/images/login.gif"
           alt="Register"
-          class="w-full h-full object-cover" />
-        <!-- style="min-height: 200px; max-height: 400px;"> -->
+          class="w-full h-full object-cover"
+        />
       </div>
 
       <!-- Form Section - Always full width of its container -->
@@ -19,18 +19,20 @@
         <app-dynamic-form
           [config]="loginFormConfig"
           (formSubmit)="onSubmit($event)"
-          class="w-full">
-        </app-dynamic-form>
+          class="w-full"
+        ></app-dynamic-form>
         <div class="text-center mt-4">
           <p class="text-sm text-gray-600">
-            Don't have an account? 
+            Don't have an account?
             <a
               routerLink="/register"
               (click)="goToRegister()"
-              class="text-blue-500 hover:underline cursor-pointer">
+              class="text-blue-500 hover:underline cursor-pointer"
+            >
               Register here
             </a>
           </p>
+        </div>
       </div>
     </div>
   </div>

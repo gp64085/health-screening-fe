@@ -53,10 +53,7 @@ export class AuthService {
 
   login(loginFormData: LoginForm): Observable<User> {
     return this.http
-      .post<ApiResponse<AuthResponse>>(
-        `${environment.apiUrl}/auth/login`,
-        loginFormData,
-      )
+      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, loginFormData)
       .pipe(
         tap((response) => {
           this.storeToken(response?.data?.token);
@@ -65,12 +62,9 @@ export class AuthService {
         map((response) => response?.data?.user),
         catchError((error) => {
           return throwError(
-            () =>
-              new Error(
-                `Login failed: ${error.error?.message || 'Unknown error'}`,
-              ),
+            () => new Error(`Login failed: ${error.error?.message || 'Unknown error'}`)
           );
-        }),
+        })
       );
   }
 
@@ -88,21 +82,15 @@ export class AuthService {
         map((response) => response.user),
         catchError((error) => {
           return throwError(
-            () =>
-              new Error(
-                `Login failed: ${error.error?.message || 'Unknown error'}`,
-              ),
+            () => new Error(`Login failed: ${error.error?.message || 'Unknown error'}`)
           );
-        }),
+        })
       );
   }
 
   register(userData: User): Observable<User> {
     return this.http
-      .post<ApiResponse<AuthResponse>>(
-        `${environment.apiUrl}/auth/register`,
-        userData,
-      )
+      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/register`, userData)
       .pipe(
         tap((response) => {
           this.storeToken(response?.data?.token);
@@ -111,12 +99,9 @@ export class AuthService {
         map((response) => response?.data?.user),
         catchError((error) => {
           return throwError(
-            () =>
-              new Error(
-                `Registration failed: ${error.error?.message || 'Unknown error'}`,
-              ),
+            () => new Error(`Registration failed: ${error.error?.message || 'Unknown error'}`)
           );
-        }),
+        })
       );
   }
 
@@ -152,18 +137,16 @@ export class AuthService {
   }
 
   refreshToken(): Observable<boolean> {
-    return this.http
-      .post<AuthResponse>(`${environment.apiUrl}/auth/refresh-token`, {})
-      .pipe(
-        tap((response) => {
-          this.storeToken(response.token);
-          this.currentUserSubject.next(response.user);
-        }),
-        map(() => true),
-        catchError(() => {
-          this.logout();
-          return of(false);
-        }),
-      );
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/refresh-token`, {}).pipe(
+      tap((response) => {
+        this.storeToken(response.token);
+        this.currentUserSubject.next(response.user);
+      }),
+      map(() => true),
+      catchError(() => {
+        this.logout();
+        return of(false);
+      })
+    );
   }
 }

@@ -2,14 +2,10 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import type { UserRegistrationForm } from '@app/auth/utils';
-import {
-  EMAIL_REGEX,
-  MOBILE_REGEX,
-  PASSWORD_REGEX,
-} from '@app/core/utils/constants';
+import { EMAIL_REGEX, MOBILE_REGEX, PASSWORD_REGEX } from '@app/core/utils/constants';
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
+import type { FormConfig } from '@app/shared/models/form-config.model';
 import { notMissing } from '@app/shared/utils';
-import type { FormConfig } from '@app/shared/utils/form-config.model';
 
 @Component({
   selector: 'app-register',
@@ -99,7 +95,7 @@ export class RegisterComponent {
       this.authService
         .register({
           email: userData?.email ?? '',
-          name: userData?.firstName + ' ' + userData?.lastName,
+          name: `${userData?.firstName} ${userData?.lastName}`,
           password: userData?.password ?? '',
         })
         .subscribe({

@@ -1,8 +1,5 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import {
-  type ApplicationConfig,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { type ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import Aura from '@primeng/themes/aura';
@@ -27,11 +24,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideHttpClient(
-      withInterceptors([
-        apiLoggingInterceptor,
-        errorHandlingInterceptor,
-        jwtInterceptor,
-      ]),
+      withInterceptors([apiLoggingInterceptor, errorHandlingInterceptor, jwtInterceptor])
     ),
     MessageService,
   ],

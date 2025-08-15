@@ -1,7 +1,4 @@
-import type {
-  HttpErrorResponse,
-  HttpInterceptorFn,
-} from '@angular/common/http';
+import type { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -52,6 +49,6 @@ export const errorHandlingInterceptor: HttpInterceptorFn = (req, next) => {
       });
 
       return throwError(() => new Error(errorMessage));
-    }),
+    })
   );
 };

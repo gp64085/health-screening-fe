@@ -8,22 +8,28 @@
         <img
           src="/images/signup.gif"
           alt="Register"
-          class="w-full h-full object-cover" />
+          class="w-full h-full object-cover"
+        />
       </div>
 
       <!-- Form Section - Always full width of its container -->
       <div class="w-full lg:w-1/2 p-6 md:p-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">
-          Register
-        </h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Register</h2>
 
         <app-dynamic-form
           [config]="registrationFormConfig"
           (formSubmit)="onFormSubmit($event)"
-          class="w-full">
-        </app-dynamic-form>
+          class="w-full"
+        ></app-dynamic-form>
         <p class="text-center text-sm text-gray-600 mt-4">
-          Already have an account? <a routerLink="/login" (click)="goToLogin()" class="text-blue-500 hover:underline cursor-pointer">Login</a>
+          Already have an account?
+          <a
+            routerLink="/login"
+            (click)="goToLogin()"
+            class="text-blue-500 hover:underline cursor-pointer"
+            >Login</a
+          >
+        </p>
       </div>
     </div>
   </div>
