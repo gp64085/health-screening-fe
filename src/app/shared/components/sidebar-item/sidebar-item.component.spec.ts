@@ -1,17 +1,17 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewResponsesComponent } from './view-responses.component';
+import { SidebarItemComponent } from './sidebar-item.component';
 
-describe('ViewResponsesComponent', () => {
-  let component: ViewResponsesComponent;
-  let fixture: ComponentFixture<ViewResponsesComponent>;
+describe('SidebarItemComponent', () => {
+  let component: SidebarItemComponent;
+  let fixture: ComponentFixture<SidebarItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ViewResponsesComponent],
+      imports: [SidebarItemComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ViewResponsesComponent);
+    fixture = TestBed.createComponent(SidebarItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

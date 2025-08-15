@@ -43,7 +43,7 @@ export class AuthService {
         id: decodedToken.sub,
         email: decodedToken.email ?? '',
         name: decodedToken.name ?? '',
-        // role: decodedToken.role ,
+        role: decodedToken.role,
       });
     } catch (error) {
       this.logout();
