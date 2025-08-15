@@ -4,8 +4,8 @@ import { AuthService } from '@app/auth/services/auth.service';
 import type { LoginForm } from '@app/auth/utils';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@app/core/utils/constants';
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
+import type { FormConfig } from '@app/shared/models/form-config.model';
 import { notMissing } from '@app/shared/utils';
-import type { FormConfig } from '@app/shared/utils/form-config.model';
 
 @Component({
   selector: 'app-login',

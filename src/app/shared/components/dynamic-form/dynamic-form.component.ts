@@ -1,12 +1,5 @@
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  type OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, inject, type OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   type FormGroup,
@@ -14,20 +7,17 @@ import {
   type ValidatorFn,
   Validators,
 } from '@angular/forms';
+import type { FormConfig, FormFieldConfig } from '@app/shared/models/form-config.model';
 import { isMissing, notMissing } from '@app/shared/utils';
-import {
-  type FormConfig,
-  type FormFieldConfig,
-} from '@app/shared/utils/form-config.model';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FloatLabel } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
-import { DatePickerModule } from 'primeng/datepicker';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { FloatLabel } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -52,9 +42,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 })
 export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   @Input() config!: T;
-  @Output() formSubmit = new EventEmitter<
-    Record<string, string | number | boolean | Date>
-  >();
+  @Output() formSubmit = new EventEmitter<Record<string, string | number | boolean | Date>>();
 
   form: FormGroup;
   private readonly formBuilder = inject(FormBuilder);
@@ -75,8 +63,8 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
         field.name,
         this.formBuilder.control(
           field.value ?? null, // Handle value conversion
-          this.getValidators(field),
-        ),
+          this.getValidators(field)
+        )
       );
 
       // Set disabled state if needed
@@ -132,11 +120,15 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   getErrorMessage(fieldName: string): string {
     const field = this.config.fields.find((f) => f.name === fieldName);
 
-    if (isMissing(field?.validation)) return '';
+    if (isMissing(field?.validation)) {
+      return '';
+    }
 
     const control = this.form.get(fieldName);
 
-    if (isMissing(control?.errors)) return '';
+    if (isMissing(control?.errors)) {
+      return '';
+    }
 
     for (const errorKey in control?.errors) {
       if (control.errors?.hasOwnProperty(errorKey)) {
@@ -150,8 +142,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
               typeof field?.validation?.minLength === 'number'
                 ? field.validation?.minLength
                 : field?.validation?.minLength?.value;
-            return field?.validation?.minLength &&
-              typeof field?.validation?.minLength !== 'number'
+            return field?.validation?.minLength && typeof field?.validation?.minLength !== 'number'
               ? field?.validation?.minLength.message
               : `Minimum length is ${min}`;
           }
@@ -160,8 +151,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
               typeof field?.validation?.maxLength === 'number'
                 ? field?.validation?.maxLength
                 : field?.validation?.maxLength?.value;
-            return field?.validation?.maxLength &&
-              typeof field?.validation?.maxLength !== 'number'
+            return field?.validation?.maxLength && typeof field?.validation?.maxLength !== 'number'
               ? field.validation.maxLength.message
               : `Maximum length is ${max}`;
           }

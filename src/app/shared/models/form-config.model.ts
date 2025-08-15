@@ -9,15 +9,7 @@ export type FormFieldType =
   | 'checkbox'
   | 'multiSelect';
 
-export type InputType =
-  | 'text'
-  | 'number'
-  | 'email'
-  | 'url'
-  | 'tel'
-  | 'date'
-  | 'time'
-  | 'color';
+export type InputType = 'text' | 'number' | 'email' | 'url' | 'tel' | 'date' | 'time' | 'color';
 
 export interface ValidatorConfig {
   required?: boolean | string;

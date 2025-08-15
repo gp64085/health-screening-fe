@@ -1,6 +1,6 @@
-{
+  {
   "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": true },
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": false,
     "includes": [
@@ -8,6 +8,17 @@
       "src/**/*.json",
       "src/**/*.html",
       "src/**/*.scss"
+    ],
+    "experimentalScannerIgnores": [
+      "node_modules/**",
+      "dist/**",
+      ".angular/**",
+      "coverage/**",
+      "*.spec.ts",
+      "*.e2e-spec.ts",
+      "karma.conf.js",
+      "protractor.conf.js",
+      "src/**/**.spec.ts"
     ]
   },
   "formatter": {
@@ -16,11 +27,10 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
-    "lineWidth": 80,
+    "lineWidth": 100,
     "attributePosition": "auto",
     "bracketSameLine": false,
     "bracketSpacing": true,
-    "expand": "auto",
     "useEditorconfig": true
   },
   "linter": {
@@ -31,46 +41,163 @@
         "noUnreachable": "error",
         "noUnusedFunctionParameters": "error",
         "noUnusedImports": "error",
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "warn",
+        "noUndeclaredVariables": "error",
+        "useIsNan": "error",
+        "useValidForDirection": "error"
+      },
+      "style": {
+        "useConst": "error",
+        "useTemplate": "error",
+        "useShorthandAssign": "error",
+        "useSingleVarDeclarator": "error",
+        "useBlockStatements": "error",
+        "useCollapsedElseIf": "error",
+        "useDefaultParameterLast": "error",
+        "useExponentiationOperator": "error",
+        "useNumberNamespace": "error",
+        "useSelfClosingElements": "error"
+      },
+      "suspicious": {
+        "noConsole": {
+          "level": "warn",
+          "options": { "allow": ["warn", "error", "info"] }
+        },
+        "noDebugger": "error",
+        "noDuplicateCase": "error",
+        "noDuplicateClassMembers": "error",
+        "noDuplicateObjectKeys": "error",
+        "noDuplicateParameters": "error",
+        "noEmptyBlockStatements": "warn",
+        "noFallthroughSwitchClause": "error",
+        "noRedeclare": "error",
+        "noShadowRestrictedNames": "error"
+      },
+      "complexity": {
+        "noBannedTypes": "warn",
+        "noUselessConstructor": "error",
+        "noUselessLabel": "error",
+        "noUselessRename": "error",
+        "noUselessSwitchCase": "error",
+        "noUselessTernary": "error",
+        "noUselessTypeConstraint": "error",
+        "useLiteralKeys": "warn",
+        "useOptionalChain": "error",
+        "useSimplifiedLogicExpression": "error"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "error",
+        "noDangerouslySetInnerHtmlWithChildren": "error"
+      },
+      "performance": {
+        "noDelete": "warn"
       }
-    },
-    "includes": ["**", "projects/**/*"]
+    }
   },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",
-      "trailingCommas": "all",
+      "trailingCommas": "es5",
       "semicolons": "always",
       "arrowParentheses": "always",
       "bracketSameLine": false,
       "quoteStyle": "single",
       "attributePosition": "auto",
       "bracketSpacing": true
+    },
+    "globals": [
+      "describe",
+      "it",
+      "expect",
+      "beforeEach",
+      "afterEach",
+      "beforeAll",
+      "afterAll",
+      "jest",
+      "jasmine",
+      "spyOn",
+      "fail",
+      "pending",
+      "xdescribe",
+      "xit",
+      "fdescribe",
+      "fit"
+    ]
+  },
+  "html": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineEnding": "lf",
+      "lineWidth": 120,
+      "selfCloseVoidElements": "always",
+      "whitespaceSensitivity": "css",
+      "bracketSameLine": false,
+      "attributePosition": "auto"
     }
   },
-  "html": { "formatter": { "selfCloseVoidElements": "always" } },
   "overrides": [
-    { "includes": ["*.json"], "formatter": { "indentWidth": 2 } },
-    { "includes": ["*.html"] },
     {
-      "includes": ["*.ts"],
+      "includes": ["*.json"],
+      "formatter": { "indentWidth": 2 }
+    },
+    {
+      "includes": ["src/**/*.component.ts"],
       "linter": {
         "rules": {
-          "correctness": { "noUnusedVariables": "error" },
+          "style": {
+            "useConst": "error"
+          },
+          "correctness": {
+            "noUnusedVariables": "warn"
+          },
           "suspicious": {
             "noConsole": {
               "level": "warn",
-              "options": { "allow": ["warn", "error"] }
+              "options": { "allow": ["warn", "error", "info"] }
             }
           }
         }
       }
     },
-    { "includes": ["*.html"] }
+    {
+      "includes": ["src/**/*.service.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConst": "error"
+          },
+          "correctness": {
+            "noUnusedVariables": "error",
+            "noUnusedImports": "error"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/**/*.component.html"],
+      "formatter": {
+        "lineWidth": 100,
+        "attributePosition": "multiline"
+      }
+    },
+    {
+      "includes": ["src/**/*.scss"],
+      "formatter": {
+        "indentWidth": 2,
+        "lineWidth": 100
+      }
+    }
   ],
   "assist": {
     "enabled": true,
-    "actions": { "source": { "organizeImports": "on" } }
+    "actions": {
+      "source": {
+        "organizeImports": "on",
+        "recommended": true
+      }
+    }
   }
 }
