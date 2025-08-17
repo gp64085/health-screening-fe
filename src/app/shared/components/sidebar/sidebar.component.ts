@@ -1,7 +1,7 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { UserRole } from '@app/core/enums';
-import { IMenuItem } from '@app/shared/models/menu-item.model';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import type { UserRole } from '@app/core/enums';
+import type { IMenuItem } from '@app/shared/models/menu-item.model';
 import { MenuService } from '@app/shared/services/menu.service';
 import { SidebarItemComponent } from '../sidebar-item/sidebar-item.component';
 
@@ -14,8 +14,8 @@ import { SidebarItemComponent } from '../sidebar-item/sidebar-item.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
-  @Input({ required: true }) menuItems: IMenuItem[] = [];
-  @Input({ required: true }) userRole: UserRole = UserRole.USER;
+  menuItems = input.required<IMenuItem[]>();
+  userRole = input.required<UserRole>();
 
   protected readonly menuService = inject(MenuService);
 }

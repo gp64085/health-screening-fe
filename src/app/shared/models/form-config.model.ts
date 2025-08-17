@@ -11,13 +11,18 @@ export type FormFieldType =
 
 export type InputType = 'text' | 'number' | 'email' | 'url' | 'tel' | 'date' | 'time' | 'color';
 
+type PatternValidation = {
+  value: RegExp;
+  message: string;
+};
+
 export interface ValidatorConfig {
   required?: boolean | string;
   minLength?: number | { value: number; message: string };
   maxLength?: number | { value: number; message: string };
   min?: number | { value: number; message: string };
   max?: number | { value: number; message: string };
-  pattern?: { value: RegExp; message: string };
+  pattern?: PatternValidation | PatternValidation[];
   email?: boolean | string;
   custom?: { validator: (value: unknown) => boolean; message: string };
 }

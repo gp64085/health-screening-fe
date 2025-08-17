@@ -103,7 +103,13 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
       }
 
       if (notMissing(field.validation.pattern)) {
-        validators.push(Validators.pattern(field.validation.pattern?.value));
+        if (Array.isArray(field.validation.pattern)) {
+          field.validation.pattern.forEach((pattern) => {
+            validators.push(Validators.pattern(pattern.value));
+          });
+        } else {
+          validators.push(Validators.pattern(field.validation.pattern?.value));
+        }
       }
 
       if (notMissing(field.validation?.email)) {
@@ -156,7 +162,8 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
               : `Maximum length is ${max}`;
           }
           case 'pattern':
-            return field?.validation?.pattern?.message ?? 'Invalid format';
+            // return (Array.isArray(field?.validation?.pattern) ? field?.validation?.pattern?.[0]?.message : field?.validation?.pattern?.message) ?? 'Invalid format';
+            return this.getPatternErrorMessage(control.errors[errorKey], field);
           case 'email':
             return typeof field?.validation?.email === 'string'
               ? field.validation.email
@@ -179,5 +186,24 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     } else {
       this.form.markAllAsTouched();
     }
+  }
+  getPatternErrorMessage(
+    patternError: { requiredPattern?: string },
+    field: FormFieldConfig<unknown> | undefined
+  ): string {
+    // Handle array of patterns
+    if (Array.isArray(field?.validation?.pattern)) {
+      const failedPattern = field.validation.pattern?.find((p) =>
+        new RegExp(p.value).test(patternError?.requiredPattern ?? '')
+      );
+      return failedPattern?.message || 'Invalid format';
+    }
+
+    // Handle single pattern with custom message
+    if (field?.validation?.pattern?.message) {
+      return field.validation.pattern?.message;
+    }
+
+    return 'Invalid format';
   }
 }

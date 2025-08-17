@@ -1,22 +1,29 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import type { LoginForm } from '@app/auth/utils';
-import { EMAIL_REGEX, PASSWORD_REGEX } from '@app/core/utils/constants';
+import { storeToken } from '@app/auth/utils/storage';
+import { ToasterMessageService } from '@app/core/services/toaster-message.service';
+import { EMAIL_FIELD_VALIDATION, PASSWORD_FIELD_VALIDATION } from '@app/core/utils/constants';
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
 import type { FormConfig } from '@app/shared/models/form-config.model';
 import { notMissing } from '@app/shared/utils';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [DynamicFormComponent],
+  imports: [DynamicFormComponent, ToastModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  providers: [ToasterMessageService, MessageService],
 })
 export class LoginComponent implements OnInit {
   private readonly authService: AuthService = inject(AuthService);
   private readonly router: Router = inject(Router);
+  private readonly toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
 
   ngOnInit(): void {
     if (notMissing(this.authService.getCurrentUser())) {
@@ -34,27 +41,14 @@ export class LoginComponent implements OnInit {
         label: 'Email',
         type: 'inputText',
         placeholder: 'Enter your email',
-        validation: {
-          required: '*Email is required',
-          pattern: {
-            value: EMAIL_REGEX,
-            message: 'Please enter a valid email address',
-          },
-        },
+        validation: EMAIL_FIELD_VALIDATION,
       },
       {
         name: 'password',
         label: 'Password',
         type: 'password',
         placeholder: 'Enter your password',
-        validation: {
-          required: '*Password is required',
-          pattern: {
-            value: PASSWORD_REGEX,
-            message:
-              'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number',
-          },
-        },
+        validation: PASSWORD_FIELD_VALIDATION,
       },
     ],
     buttons: [
@@ -77,10 +71,23 @@ export class LoginComponent implements OnInit {
       };
 
       this.authService.login(loginData).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
-        error: (error) => {
-          console.error('Login failed:', error);
-          // TODO: Show user-friendly error message
+        next: (response) => {
+          if (response.success) {
+            storeToken(response?.data?.token);
+            this.authService.saveUser(response.data?.user);
+
+            this.toasterMessageService.success({
+              detail: response.message,
+            });
+
+            this.router.navigate(['/dashboard']);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.toasterMessageService.error({
+            detail: error.message,
+            closable: false,
+          });
         },
       });
     }

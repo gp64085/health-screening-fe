@@ -2,7 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import type { UserRegistrationForm } from '@app/auth/utils';
-import { EMAIL_REGEX, MOBILE_REGEX, PASSWORD_REGEX } from '@app/core/utils/constants';
+import {
+  EMAIL_FIELD_VALIDATION,
+  MOBILE_REGEX,
+  PASSWORD_FIELD_VALIDATION,
+} from '@app/core/utils/constants';
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
 import type { FormConfig } from '@app/shared/models/form-config.model';
 import { notMissing } from '@app/shared/utils';
@@ -55,27 +59,14 @@ export class RegisterComponent {
         label: 'Email',
         type: 'inputText',
         placeholder: 'Enter your email',
-        validation: {
-          required: '*Email is required',
-          pattern: {
-            value: EMAIL_REGEX,
-            message: 'Please enter a valid email address',
-          },
-        },
+        validation: EMAIL_FIELD_VALIDATION,
       },
       {
         name: 'password',
         label: 'Password',
         type: 'password',
         placeholder: 'Enter your password',
-        validation: {
-          required: 'Password is required',
-          pattern: {
-            value: PASSWORD_REGEX,
-            message:
-              'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number',
-          },
-        },
+        validation: PASSWORD_FIELD_VALIDATION,
       },
     ],
     buttons: [
