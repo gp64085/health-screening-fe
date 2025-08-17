@@ -72,9 +72,13 @@ export class LoginComponent implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: (response) => {
-          if (response.success) {
-            storeToken(response?.data?.token);
-            this.authService.saveUser(response.data?.user);
+          if (
+            response.success &&
+            notMissing(response.data?.token) &&
+            notMissing(response.data.user)
+          ) {
+            storeToken(response.data.token);
+            this.authService.saveUser(response.data.user);
 
             this.toasterMessageService.success({
               detail: response.message,

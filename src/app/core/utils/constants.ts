@@ -16,16 +16,8 @@ export const DIGIT_REGEX = /\d/;
 // Check for at least one special character(@!$%&*#)
 export const SPECIAL_CHAR_REGEX = /^(?=.*[@!$%&*#]).*/;
 
-// Combine all the regexes into a single regex
-const passwordRegex = new RegExp(
-  `${LOWER_CASE_REGEX.source}${UPPER_CASE_REGEX.source}${DIGIT_REGEX.source}`
-);
-
 // Check for a password length of at least 8 characters
-export const PASSWORD_LENGTH_REGEX = /.{8, }/;
-
-// Combine all the individual regexes to validate the password
-export const PASSWORD_REGEX = new RegExp(`${passwordRegex.source}${PASSWORD_LENGTH_REGEX.source}`);
+export const PASSWORD_LENGTH_REGEX = /.{8,}/;
 
 export const EMAIL_FIELD_VALIDATION: ValidatorConfig = {
   required: '*Email is required',
