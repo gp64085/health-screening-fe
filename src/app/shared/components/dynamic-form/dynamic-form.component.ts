@@ -103,7 +103,13 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
       }
 
       if (notMissing(field.validation.pattern)) {
-        validators.push(Validators.pattern(field.validation.pattern?.value));
+        if (Array.isArray(field.validation.pattern)) {
+          field.validation.pattern.forEach((pattern) => {
+            validators.push(Validators.pattern(pattern.value));
+          });
+        } else {
+          validators.push(Validators.pattern(field.validation.pattern?.value));
+        }
       }
 
       if (notMissing(field.validation?.email)) {
@@ -134,33 +140,15 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
       if (control.errors?.hasOwnProperty(errorKey)) {
         switch (errorKey) {
           case 'required':
-            return typeof field?.validation?.required === 'string'
-              ? field?.validation?.required
-              : 'This field is required';
-          case 'minlength': {
-            const min =
-              typeof field?.validation?.minLength === 'number'
-                ? field.validation?.minLength
-                : field?.validation?.minLength?.value;
-            return field?.validation?.minLength && typeof field?.validation?.minLength !== 'number'
-              ? field?.validation?.minLength.message
-              : `Minimum length is ${min}`;
-          }
-          case 'maxlength': {
-            const max =
-              typeof field?.validation?.maxLength === 'number'
-                ? field?.validation?.maxLength
-                : field?.validation?.maxLength?.value;
-            return field?.validation?.maxLength && typeof field?.validation?.maxLength !== 'number'
-              ? field.validation.maxLength.message
-              : `Maximum length is ${max}`;
-          }
+            return this.getRequiredError(field);
+          case 'minlength':
+            return this.getMinLengthError(field);
+          case 'maxlength':
+            return this.getMaxLengthError(field);
           case 'pattern':
-            return field?.validation?.pattern?.message ?? 'Invalid format';
+            return this.getPatternErrorMessage(control.errors[errorKey], field);
           case 'email':
-            return typeof field?.validation?.email === 'string'
-              ? field.validation.email
-              : 'Please enter a valid email address';
+            return this.getEmailError(field);
           default:
             return field?.validation?.custom?.message ?? 'Invalid value';
         }
@@ -179,5 +167,58 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     } else {
       this.form.markAllAsTouched();
     }
+  }
+  getPatternErrorMessage(
+    patternError: { requiredPattern?: string },
+    field: FormFieldConfig<unknown> | undefined
+  ): string {
+    // Handle array of patterns
+    if (Array.isArray(field?.validation?.pattern)) {
+      const failedPattern = field.validation.pattern?.find((p) =>
+        new RegExp(p.value).test(patternError?.requiredPattern ?? '')
+      );
+      return failedPattern?.message || 'Invalid format';
+    }
+
+    // Handle single pattern with custom message
+    if (field?.validation?.pattern?.message) {
+      return field.validation.pattern?.message;
+    }
+
+    return 'Invalid format';
+  }
+
+  getMaxLengthError(field: FormFieldConfig<unknown> | undefined): string {
+    const max =
+      typeof field?.validation?.maxLength === 'number'
+        ? field.validation.maxLength
+        : field?.validation?.maxLength?.value;
+
+    return field?.validation?.maxLength && typeof field?.validation?.maxLength !== 'number'
+      ? field.validation.maxLength.message
+      : `Maximum length is ${max}`;
+  }
+
+  getMinLengthError(field: FormFieldConfig<unknown> | undefined): string {
+    const min =
+      typeof field?.validation?.minLength === 'number'
+        ? field.validation.minLength
+        : field?.validation?.minLength?.value;
+
+    return field?.validation?.minLength && typeof field?.validation?.minLength !== 'number'
+      ? field.validation.minLength.message
+      : `Minimum length is ${min}`;
+  }
+
+  getEmailError(field: FormFieldConfig<unknown> | undefined): string {
+    return typeof field?.validation?.email === 'string'
+      ? field.validation.email
+      : 'Please enter a valid email address';
+  }
+
+  getRequiredError(field: FormFieldConfig<unknown> | undefined): string {
+    return typeof field?.validation?.required === 'string'
+      ? field.validation.required
+      : 'This field is required';
   }
 }

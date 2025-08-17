@@ -39,7 +39,7 @@
 
   <!-- Menu items -->
   <ul class="space-y-1 px-2">
-    @for(item of menuItems; track item.label) { @if(item.roles?.includes(userRole)){
+    @for(item of menuItems(); track item.label) { @if(item.roles?.includes(userRole())){
     <app-sidebar-item
       [menuItem]="item"
       [isCollapsed]="(menuService.isCollapsed$ | async) || false"

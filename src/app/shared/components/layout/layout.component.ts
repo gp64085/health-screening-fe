@@ -1,8 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  type OnDestroy,
+  type OnInit,
+} from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import { UserRole } from '@app/core/enums';
-import { IMenuItem } from '@app/shared/models/menu-item.model';
+import type { IMenuItem } from '@app/shared/models/menu-item.model';
 import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 

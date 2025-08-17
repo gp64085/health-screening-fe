@@ -1,13 +1,17 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import type { ApiResponse } from '@app/core/interfaces/api-response';
+import { UserRole } from '@app/core/enums';
+import { AuthenticationError } from '@app/core/errors/authentication-error';
+import { ApiResponse } from '@app/core/interfaces/api-response';
+import { ApiService } from '@app/core/services/api.service';
+import { ToasterMessageService } from '@app/core/services/toaster-message.service';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, type Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, type Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import type { User } from '../../core/interfaces/user';
 import type { AuthResponse } from '../interfaces/auth-response';
-import type { IJwtPayload, LoginForm } from '../utils';
+import { type IJwtPayload, type LoginForm, TOKEN_KEY } from '../utils';
+import { getToken, storeToken } from '../utils/storage';
 
 @Injectable({
   providedIn: 'root',
@@ -15,15 +19,15 @@ import type { IJwtPayload, LoginForm } from '../utils';
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-  private tokenKey = 'auth_token';
-  private readonly http: HttpClient = inject(HttpClient);
+  private readonly apiService: ApiService = inject(ApiService);
+  private readonly toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
 
   constructor() {
     this.loadStoredUser();
   }
 
   private loadStoredUser(): void {
-    const token = this.getToken();
+    const token = getToken();
     if (!token) {
       return;
     }
@@ -51,102 +55,60 @@ export class AuthService {
     }
   }
 
-  login(loginFormData: LoginForm): Observable<User> {
-    return this.http
-      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, loginFormData)
-      .pipe(
-        tap((response) => {
-          this.storeToken(response?.data?.token);
-          this.currentUserSubject.next(response?.data.user);
-        }),
-        map((response) => response?.data?.user),
-        catchError((error) => {
-          return throwError(
-            () => new Error(`Login failed: ${error.error?.message || 'Unknown error'}`)
-          );
-        })
-      );
-  }
-
-  loginWithMobileAndDob(mobile: string, dob: string): Observable<User> {
-    return this.http
-      .post<AuthResponse>(`${environment.apiUrl}/auth/login-mobile`, {
-        mobile,
-        dob,
+  login(loginFormData: LoginForm): Observable<ApiResponse<AuthResponse>> {
+    return this.apiService.post<LoginForm, AuthResponse>('auth/login', loginFormData).pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.toasterMessageService.error({
+          detail: error.message,
+          closable: false,
+        });
+        return throwError(() => error);
       })
-      .pipe(
-        tap((response) => {
-          this.storeToken(response.token);
-          this.currentUserSubject.next(response.user);
-        }),
-        map((response) => response.user),
-        catchError((error) => {
-          return throwError(
-            () => new Error(`Login failed: ${error.error?.message || 'Unknown error'}`)
-          );
-        })
-      );
+    );
+  }
+  private normalizeAuthError(error: HttpErrorResponse): AuthenticationError {
+    if (error instanceof AuthenticationError) {
+      return error;
+    }
+    return new AuthenticationError(
+      error.error?.message || error.message || 'An unknown authentication error occurred'
+    );
   }
 
   register(userData: User): Observable<User> {
-    return this.http
-      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/register`, userData)
-      .pipe(
-        tap((response) => {
-          this.storeToken(response?.data?.token);
-          this.currentUserSubject.next(response?.data?.user);
-        }),
-        map((response) => response?.data?.user),
-        catchError((error) => {
-          return throwError(
-            () => new Error(`Registration failed: ${error.error?.message || 'Unknown error'}`)
-          );
-        })
-      );
+    return this.apiService.post<User, AuthResponse>('auth/register', userData).pipe(
+      tap((response) => {
+        storeToken(response?.data?.token);
+        this.currentUserSubject.next(response?.data?.user);
+      }),
+      map((response) => response?.data?.user)
+    );
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(TOKEN_KEY);
     this.currentUserSubject.next(null);
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  private storeToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
-  }
-
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!getToken();
   }
 
   isAdmin(): boolean {
     const user = this.currentUserSubject.value;
-    return !!user && user.role === 'ADMIN';
+    return !!user && user.role === UserRole.ADMIN;
   }
 
   isUser(): boolean {
     const user = this.currentUserSubject.value;
-    return !!user && user.role === 'USER';
+    return !!user && user.role === UserRole.USER;
   }
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  refreshToken(): Observable<boolean> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/refresh-token`, {}).pipe(
-      tap((response) => {
-        this.storeToken(response.token);
-        this.currentUserSubject.next(response.user);
-      }),
-      map(() => true),
-      catchError(() => {
-        this.logout();
-        return of(false);
-      })
-    );
+  saveUser(user: User): void {
+    this.currentUserSubject.next(user);
   }
 }

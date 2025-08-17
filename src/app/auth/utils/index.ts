@@ -1,6 +1,8 @@
 import type { UserRole } from '@app/core/enums';
 import type { JwtPayload } from 'jwt-decode';
 
+export const TOKEN_KEY = 'auth_token';
+
 export interface IJwtPayload extends JwtPayload {
   email?: string;
   name?: string;
