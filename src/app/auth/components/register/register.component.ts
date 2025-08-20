@@ -1,7 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
-import type { UserRegistrationForm } from '@app/auth/utils';
+import { type UserRegistrationForm } from '@app/auth/utils';
+import { ToasterMessageService } from '@app/core/services/toaster-message.service';
+import { hasAllRequiredProperties } from '@app/core/utils';
 import {
   EMAIL_FIELD_VALIDATION,
   MOBILE_REGEX,
@@ -10,17 +12,19 @@ import {
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
 import type { FormConfig } from '@app/shared/models/form-config.model';
 import { notMissing } from '@app/shared/utils';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [DynamicFormComponent],
+  imports: [DynamicFormComponent, Toast],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   private readonly authService: AuthService = inject(AuthService);
   private readonly router: Router = inject(Router);
+  private readonly toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
 
   registrationFormConfig: FormConfig<UserRegistrationForm> = {
     id: 'user-registration',
@@ -79,15 +83,29 @@ export class RegisterComponent {
     ],
   };
 
-  onFormSubmit(formData: Record<string, unknown>): void {
+  onFormSubmit(formData: unknown): void {
     if (notMissing(formData)) {
-      // Convert formData to UserRegistrationForm type
-      const userData = formData as unknown as UserRegistrationForm;
+      if (
+        typeof formData !== 'object' ||
+        !hasAllRequiredProperties<UserRegistrationForm>(formData, [
+          'firstName',
+          'lastName',
+          'email',
+          'password',
+        ])
+      ) {
+        this.toasterMessageService.error({
+          detail: 'Please fill in all required fields.',
+          closable: false,
+        });
+        return;
+      }
+
       this.authService
         .register({
-          email: userData?.email ?? '',
-          name: `${userData?.firstName} ${userData?.lastName}`,
-          password: userData?.password ?? '',
+          email: formData?.email ?? '',
+          name: `${formData?.firstName} ${formData?.lastName}`,
+          password: formData?.password ?? '',
         })
         .subscribe({
           next: () => this.router.navigate(['/login']),

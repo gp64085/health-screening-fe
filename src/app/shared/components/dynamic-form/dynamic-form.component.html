@@ -1,14 +1,14 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  [class]="config.styleClass"
+  [class]="config().styleClass"
 >
   <div
     class="form-fields flex flex-wrap flex-col gap-y-4"
-    [class.responsive]="config.responsive"
+    [class.responsive]="config().responsive"
   >
     <div
-      *ngFor="let field of config.fields"
+      *ngFor="let field of config().fields"
       class="field-container"
     >
       <p-floatlabel
@@ -108,10 +108,10 @@
   <!-- Form Buttons -->
   <div
     class="form-buttons"
-    *ngIf="config.buttons && config.buttons.length > 0"
+    *ngIf="config().buttons && config().buttons.length > 0"
   >
     <p-button
-      *ngFor="let button of config.buttons"
+      *ngFor="let button of config().buttons"
       [type]="button.type || 'button'"
       [label]="button.label"
       [icon]="button.icon || ''"
