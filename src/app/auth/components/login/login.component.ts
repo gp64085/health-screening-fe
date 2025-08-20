@@ -62,12 +62,12 @@ export class LoginComponent implements OnInit {
     ],
   };
 
-  onSubmit(formData: unknown): void {
-    if (notMissing(formData)) {
+  onSubmit(loginFormData: unknown): void {
+    if (notMissing(loginFormData)) {
       // Check if formData is an object and has all required fields
       if (
-        typeof formData !== 'object' ||
-        !hasAllRequiredProperties(formData, ['email', 'password'])
+        typeof loginFormData !== 'object' ||
+        !hasAllRequiredProperties<LoginForm>(loginFormData, ['email', 'password'])
       ) {
         this.toasterMessageService.error({
           detail: 'Please fill in all required fields.',
@@ -75,8 +75,6 @@ export class LoginComponent implements OnInit {
         });
         return;
       }
-
-      const loginFormData = formData as LoginForm;
 
       this.authService.login(loginFormData).subscribe({
         next: (response) => {

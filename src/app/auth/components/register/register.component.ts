@@ -12,11 +12,12 @@ import {
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
 import type { FormConfig } from '@app/shared/models/form-config.model';
 import { notMissing } from '@app/shared/utils';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [DynamicFormComponent],
+  imports: [DynamicFormComponent, Toast],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -86,10 +87,9 @@ export class RegisterComponent {
     if (notMissing(formData)) {
       if (
         typeof formData !== 'object' ||
-        !hasAllRequiredProperties(formData, [
+        !hasAllRequiredProperties<UserRegistrationForm>(formData, [
           'firstName',
           'lastName',
-          'mobile',
           'email',
           'password',
         ])
@@ -101,13 +101,11 @@ export class RegisterComponent {
         return;
       }
 
-      // Convert formData to UserRegistrationForm type
-      const userData = formData as UserRegistrationForm;
       this.authService
         .register({
-          email: userData?.email ?? '',
-          name: `${userData?.firstName} ${userData?.lastName}`,
-          password: userData?.password ?? '',
+          email: formData?.email ?? '',
+          name: `${formData?.firstName} ${formData?.lastName}`,
+          password: formData?.password ?? '',
         })
         .subscribe({
           next: () => this.router.navigate(['/login']),

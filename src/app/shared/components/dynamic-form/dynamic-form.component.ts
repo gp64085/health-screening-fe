@@ -7,6 +7,7 @@ import {
   type ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { ToasterMessageService } from '@app/core/services/toaster-message.service';
 import type { FormConfig, FormFieldConfig } from '@app/shared/models/form-config.model';
 import { isMissing, notMissing } from '@app/shared/utils';
 import { ButtonModule } from 'primeng/button';
@@ -43,6 +44,7 @@ import { SelectModule } from 'primeng/select';
 export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   config = input.required<T>();
   formSubmit = output<unknown>();
+  private readonly messageService = inject(ToasterMessageService);
 
   form: FormGroup;
   private readonly formBuilder = inject(FormBuilder);
@@ -52,8 +54,10 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   }
 
   ngOnInit(): void {
-    if (isMissing(this.config)) {
-      throw new Error('Form configuration is required');
+    if (isMissing(this.config())) {
+      this.messageService.error({
+        detail: 'Form configuration is required',
+      });
     }
     this.buildForm();
   }
