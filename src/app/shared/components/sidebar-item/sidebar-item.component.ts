@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import type { IMenuItem } from '@app/shared/models/menu-item.model';
 
@@ -12,6 +12,6 @@ import type { IMenuItem } from '@app/shared/models/menu-item.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarItemComponent {
-  @Input({ required: true }) menuItem!: IMenuItem;
-  @Input() isCollapsed: boolean = false;
+  menuItem = input.required<IMenuItem>();
+  isCollapsed = input<boolean>(false);
 }

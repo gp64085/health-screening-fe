@@ -61,16 +61,11 @@ export class LoginComponent implements OnInit {
     ],
   };
 
-  onSubmit(formData: Record<string, unknown>): void {
+  onSubmit(formData: unknown): void {
     if (notMissing(formData)) {
-      const loginData: LoginForm = {
-        // biome-ignore lint/complexity/useLiteralKeys: Required to access form data
-        email: formData['email'] as string,
-        // biome-ignore lint/complexity/useLiteralKeys: Required to access form data
-        password: formData['password'] as string,
-      };
+      const loginFormData = formData as LoginForm;
 
-      this.authService.login(loginData).subscribe({
+      this.authService.login(loginFormData).subscribe({
         next: (response) => {
           if (
             response.success &&

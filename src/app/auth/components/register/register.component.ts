@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
-import type { UserRegistrationForm } from '@app/auth/utils';
+import { type UserRegistrationForm } from '@app/auth/utils';
 import {
   EMAIL_FIELD_VALIDATION,
   MOBILE_REGEX,
@@ -79,10 +79,10 @@ export class RegisterComponent {
     ],
   };
 
-  onFormSubmit(formData: Record<string, unknown>): void {
+  onFormSubmit(formData: unknown): void {
     if (notMissing(formData)) {
       // Convert formData to UserRegistrationForm type
-      const userData = formData as unknown as UserRegistrationForm;
+      const userData = formData as UserRegistrationForm;
       this.authService
         .register({
           email: userData?.email ?? '',

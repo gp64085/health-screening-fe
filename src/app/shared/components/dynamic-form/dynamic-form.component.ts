@@ -1,5 +1,5 @@
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import { Component, EventEmitter, Input, inject, type OnInit, Output } from '@angular/core';
+import { Component, inject, input, type OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   type FormGroup,
@@ -41,8 +41,8 @@ import { SelectModule } from 'primeng/select';
   styleUrl: './dynamic-form.component.scss',
 })
 export class DynamicFormComponent<T extends FormConfig> implements OnInit {
-  @Input() config!: T;
-  @Output() formSubmit = new EventEmitter<Record<string, string | number | boolean | Date>>();
+  config = input.required<T>();
+  formSubmit = output<unknown>();
 
   form: FormGroup;
   private readonly formBuilder = inject(FormBuilder);
@@ -58,7 +58,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     this.buildForm();
   }
   private buildForm(): void {
-    this.config.fields.forEach((field) => {
+    this.config().fields.forEach((field) => {
       this.form.addControl(
         field.name,
         this.formBuilder.control(
@@ -74,8 +74,8 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     });
 
     // 4. Apply initial data if provided
-    if (this.config.initialData) {
-      this.form.patchValue(this.config.initialData, { emitEvent: false });
+    if (notMissing(this.config()?.initialData)) {
+      this.form.patchValue(this.config().initialData ?? {}, { emitEvent: false });
     }
   }
   getValidators(field: FormFieldConfig): ValidatorFn[] {
@@ -124,7 +124,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   }
 
   getErrorMessage(fieldName: string): string {
-    const field = this.config.fields.find((f) => f.name === fieldName);
+    const field = this.config()?.fields.find((f) => f.name === fieldName);
 
     if (isMissing(field?.validation)) {
       return '';
@@ -161,7 +161,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   onSubmit(): void {
     if (this.form.valid) {
       this.formSubmit.emit(this.form.value);
-      if (notMissing(this.config.autoReset) && this.config.autoReset === true) {
+      if (this.config()?.autoReset === true) {
         this.form.reset();
       }
     } else {
