@@ -5,6 +5,7 @@ import { AuthService } from '@app/auth/services/auth.service';
 import type { LoginForm } from '@app/auth/utils';
 import { storeToken } from '@app/auth/utils/storage';
 import { ToasterMessageService } from '@app/core/services/toaster-message.service';
+import { hasAllRequiredProperties } from '@app/core/utils';
 import { EMAIL_FIELD_VALIDATION, PASSWORD_FIELD_VALIDATION } from '@app/core/utils/constants';
 import { DynamicFormComponent } from '@app/shared/components/dynamic-form/dynamic-form.component';
 import type { FormConfig } from '@app/shared/models/form-config.model';
@@ -63,6 +64,18 @@ export class LoginComponent implements OnInit {
 
   onSubmit(formData: unknown): void {
     if (notMissing(formData)) {
+      // Check if formData is an object and has all required fields
+      if (
+        typeof formData !== 'object' ||
+        !hasAllRequiredProperties(formData, ['email', 'password'])
+      ) {
+        this.toasterMessageService.error({
+          detail: 'Please fill in all required fields.',
+          closable: false,
+        });
+        return;
+      }
+
       const loginFormData = formData as LoginForm;
 
       this.authService.login(loginFormData).subscribe({

@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import { type UserRegistrationForm } from '@app/auth/utils';
+import { ToasterMessageService } from '@app/core/services/toaster-message.service';
+import { hasAllRequiredProperties } from '@app/core/utils';
 import {
   EMAIL_FIELD_VALIDATION,
   MOBILE_REGEX,
@@ -21,6 +23,7 @@ import { notMissing } from '@app/shared/utils';
 export class RegisterComponent {
   private readonly authService: AuthService = inject(AuthService);
   private readonly router: Router = inject(Router);
+  private readonly toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
 
   registrationFormConfig: FormConfig<UserRegistrationForm> = {
     id: 'user-registration',
@@ -81,6 +84,23 @@ export class RegisterComponent {
 
   onFormSubmit(formData: unknown): void {
     if (notMissing(formData)) {
+      if (
+        typeof formData !== 'object' ||
+        !hasAllRequiredProperties(formData, [
+          'firstName',
+          'lastName',
+          'mobile',
+          'email',
+          'password',
+        ])
+      ) {
+        this.toasterMessageService.error({
+          detail: 'Please fill in all required fields.',
+          closable: false,
+        });
+        return;
+      }
+
       // Convert formData to UserRegistrationForm type
       const userData = formData as UserRegistrationForm;
       this.authService
