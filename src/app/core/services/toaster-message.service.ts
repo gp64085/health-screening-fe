@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { MessageService, ToastMessageOptions } from 'primeng/api';
+import { MessageService, type ToastMessageOptions } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',

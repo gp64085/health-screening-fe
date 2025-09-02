@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
-import { type Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 import type { ApiResponse } from '../interfaces/api-response';
 import type { IApiOptions } from '../interfaces/iapi-options';
 

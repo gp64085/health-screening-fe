@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
-import { type UserRegistrationForm } from '@app/auth/utils';
+import type { UserRegistrationForm } from '@app/auth/utils';
 import { ToasterMessageService } from '@app/core/services/toaster-message.service';
 import { hasAllRequiredProperties } from '@app/core/utils';
 import {
@@ -22,9 +22,9 @@ import { Toast } from 'primeng/toast';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-  private readonly authService: AuthService = inject(AuthService);
-  private readonly router: Router = inject(Router);
-  private readonly toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
+  readonly #authService: AuthService = inject(AuthService);
+  readonly #router: Router = inject(Router);
+  readonly #toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
 
   registrationFormConfig: FormConfig<UserRegistrationForm> = {
     id: 'user-registration',
@@ -94,21 +94,21 @@ export class RegisterComponent {
           'password',
         ])
       ) {
-        this.toasterMessageService.error({
+        this.#toasterMessageService.error({
           detail: 'Please fill in all required fields.',
           closable: false,
         });
         return;
       }
 
-      this.authService
+      this.#authService
         .register({
           email: formData?.email ?? '',
           name: `${formData?.firstName} ${formData?.lastName}`,
           password: formData?.password ?? '',
         })
         .subscribe({
-          next: () => this.router.navigate(['/login']),
+          next: () => this.#router.navigate(['/login']),
           error: (error) => {
             console.error('Registration failed:', error);
           },
@@ -117,6 +117,6 @@ export class RegisterComponent {
   }
 
   goToLogin() {
-    this.router.navigate(['/login']);
+    this.#router.navigate(['/login']);
   }
 }

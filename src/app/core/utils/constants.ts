@@ -1,4 +1,4 @@
-import { ValidatorConfig } from '@app/shared/models/form-config.model';
+import type { ValidatorConfig } from '@app/shared/models/form-config.model';
 
 export const EMAIL_REGEX =
   /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

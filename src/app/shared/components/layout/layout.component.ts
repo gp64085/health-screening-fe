@@ -1,15 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  type OnDestroy,
-  type OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, type OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import { UserRole } from '@app/core/enums';
 import type { IMenuItem } from '@app/shared/models/menu-item.model';
-import { Subject, takeUntil } from 'rxjs';
+import { notMissing } from '@app/shared/utils';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
@@ -20,10 +14,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   styleUrl: './layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LayoutComponent implements OnInit, OnDestroy {
-  private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
-  private readonly destroy$ = new Subject<void>();
+export class LayoutComponent implements OnInit {
+  readonly #router = inject(Router);
+  readonly #authService = inject(AuthService);
 
   protected currentRole: UserRole = UserRole.USER;
   protected readonly menuItems: IMenuItem[] = [
@@ -53,24 +46,17 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.initializeUserRole();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   private initializeUserRole(): void {
-    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (user) => {
-        this.currentRole = user?.role ?? UserRole.USER;
-      },
-      error: (error) => {
-        console.error('Error fetching user role:', error);
-        this.handleAuthError();
-      },
-    });
+    const user = this.#authService.currentUser();
+    if (this.#authService.isLoggedIn() && notMissing(user)) {
+      this.currentRole = user?.role ?? UserRole.USER;
+    } else {
+      console.error('Error in fetching user role');
+      this.handleAuthError();
+    }
   }
 
   private handleAuthError(): void {
-    this.router.navigate(['/login']);
+    this.#router.navigate(['/login']);
   }
 }

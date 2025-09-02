@@ -3,7 +3,7 @@ import type { JwtPayload } from 'jwt-decode';
 
 export const TOKEN_KEY = 'auth_token';
 
-export interface IJwtPayload extends JwtPayload {
+export interface JwtTokenPayload extends JwtPayload {
   email?: string;
   name?: string;
   role?: UserRole;

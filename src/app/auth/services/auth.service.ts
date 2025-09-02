@@ -1,39 +1,45 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import type { HttpErrorResponse } from '@angular/common/http';
+import { computed, Injectable, inject, signal } from '@angular/core';
 import { UserRole } from '@app/core/enums';
-import { AuthenticationError } from '@app/core/errors/authentication-error';
-import { ApiResponse } from '@app/core/interfaces/api-response';
+import type { ApiResponse } from '@app/core/interfaces/api-response';
 import { ApiService } from '@app/core/services/api.service';
 import { ToasterMessageService } from '@app/core/services/toaster-message.service';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject, type Observable, throwError } from 'rxjs';
+import { type Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import type { User } from '../../core/interfaces/user';
 import type { AuthResponse } from '../interfaces/auth-response';
-import { type IJwtPayload, type LoginForm, TOKEN_KEY } from '../utils';
+import { type JwtTokenPayload, type LoginForm, TOKEN_KEY } from '../utils';
 import { getToken, storeToken } from '../utils/storage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
-  private readonly apiService: ApiService = inject(ApiService);
-  private readonly toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
+  readonly #currentUserSignal = signal<User | null>(null);
+  readonly #apiService: ApiService = inject(ApiService);
+  readonly #toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
+
+  // Public signal for components to read
+  public readonly currentUser = this.#currentUserSignal.asReadonly();
+
+  // computed signals for role-based checks
+  public readonly isLoggedIn = computed(() => !!getToken() && !!this.currentUser());
+  public readonly isAdmin = computed(() => this.#checkUserRole(UserRole.ADMIN));
+  public readonly isUser = computed(() => this.#checkUserRole(UserRole.USER));
 
   constructor() {
-    this.loadStoredUser();
+    this.#loadStoredUser();
   }
 
-  private loadStoredUser(): void {
+  #loadStoredUser(): void {
     const token = getToken();
     if (!token) {
       return;
     }
 
     try {
-      const decodedToken: IJwtPayload = jwtDecode(token);
+      const decodedToken: JwtTokenPayload = jwtDecode(token);
 
       // Check if token is expired
       const currentTime = Date.now() / 1000;
@@ -43,7 +49,7 @@ export class AuthService {
       }
 
       // Set the current user from token data
-      this.currentUserSubject.next({
+      this.#currentUserSignal.set({
         id: decodedToken.sub,
         email: decodedToken.email ?? '',
         name: decodedToken.name ?? '',
@@ -56,9 +62,9 @@ export class AuthService {
   }
 
   login(loginFormData: LoginForm): Observable<ApiResponse<AuthResponse>> {
-    return this.apiService.post<LoginForm, AuthResponse>('auth/login', loginFormData).pipe(
+    return this.#apiService.post<LoginForm, AuthResponse>('auth/login', loginFormData).pipe(
       catchError((error: HttpErrorResponse) => {
-        this.toasterMessageService.error({
+        this.#toasterMessageService.error({
           detail: error.message,
           closable: false,
         });
@@ -66,20 +72,16 @@ export class AuthService {
       })
     );
   }
-  private normalizeAuthError(error: HttpErrorResponse): AuthenticationError {
-    if (error instanceof AuthenticationError) {
-      return error;
-    }
-    return new AuthenticationError(
-      error.error?.message || error.message || 'An unknown authentication error occurred'
-    );
-  }
 
   register(userData: User): Observable<User> {
-    return this.apiService.post<User, AuthResponse>('auth/register', userData).pipe(
+    return this.#apiService.post<User, AuthResponse>('auth/register', userData).pipe(
       tap((response) => {
-        storeToken(response?.data?.token);
-        this.currentUserSubject.next(response?.data?.user);
+        if (response.success) {
+          this.setAuthenticatedUser(response.data.token, response.data.user);
+          this.#toasterMessageService.success({
+            detail: response.message,
+          });
+        }
       }),
       map((response) => response?.data?.user)
     );
@@ -87,28 +89,20 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
-    this.currentUserSubject.next(null);
+    this.#currentUserSignal.set(null);
   }
 
-  isLoggedIn(): boolean {
-    return !!getToken();
+  #checkUserRole(role: UserRole): boolean {
+    const user = this.currentUser();
+    return !!user && user.role === role;
   }
 
-  isAdmin(): boolean {
-    const user = this.currentUserSubject.value;
-    return !!user && user.role === UserRole.ADMIN;
+  #saveUser(user: User): void {
+    this.#currentUserSignal.set(user);
   }
 
-  isUser(): boolean {
-    const user = this.currentUserSubject.value;
-    return !!user && user.role === UserRole.USER;
-  }
-
-  getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
-  }
-
-  saveUser(user: User): void {
-    this.currentUserSubject.next(user);
+  setAuthenticatedUser(token: string, user: User): void {
+    this.#saveUser(user);
+    storeToken(token);
   }
 }
