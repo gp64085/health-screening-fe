@@ -24,7 +24,7 @@ export class AuthService {
   public readonly currentUser = this.#currentUserSignal.asReadonly();
 
   // computed signals for role-based checks
-  public readonly isLoggedIn = computed(() => !!getToken() && !!this.currentUser());
+  public readonly isLoggedIn = computed(() => !!this.currentUser());
   public readonly isAdmin = computed(() => this.#checkUserRole(UserRole.ADMIN));
   public readonly isUser = computed(() => this.#checkUserRole(UserRole.USER));
 
