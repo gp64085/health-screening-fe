@@ -146,7 +146,8 @@
             "useConst": "error"
           },
           "correctness": {
-            "noUnusedVariables": "warn"
+            "noUnusedVariables": "warn",
+            "noUnusedImports": "error"
           },
           "suspicious": {
             "noConsole": {

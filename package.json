@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "biome check ./src",
     "lint:fix": "biome check --write",
-    "format": "pnpm run lint:fix && pnpm run fix",
+    "format": "pnpm run fix",
     "format:check": "biome format --check ./src",
     "fix": "biome check --write --unsafe",
     "validate": "pnpm run lint && pnpm run format:check",

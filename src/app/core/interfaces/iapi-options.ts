@@ -1,4 +1,4 @@
-import { HttpParams } from '@angular/common/http';
+import type { HttpParams } from '@angular/common/http';
 
 export interface IApiOptions {
   headers?: {
