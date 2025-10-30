@@ -7,19 +7,15 @@
     class="form-fields flex flex-wrap flex-col gap-y-4"
     [class.responsive]="config().responsive"
   >
-    <div
-      *ngFor="let field of config().fields"
-      class="field-container"
-    >
-      <p-floatlabel
-        variant="on"
-        *ngIf="field.type !== 'password'"
-      >
+    @for(field of config().fields; track trackByCompositeKey($index, field)) {
+    <div class="field-container">
+      @if(field.type !== 'password') {
+      <p-floatlabel variant="on">
         <label [for]="field.name">{{ field.label | titlecase }}</label>
 
         <!-- Input Text Field -->
+        @if(field.type === 'inputText') {
         <input
-          *ngIf="field.type === 'inputText'"
           pInputText
           [id]="field.name"
           [formControlName]="field.name"
@@ -27,29 +23,32 @@
           [value]="form.get(field.name)?.value"
           class="form-control w-full md:w-1/2 lg:w-1/3"
         />
+        }
 
         <!-- Input Number Field -->
+        @if (field.type === 'inputNumber') {
         <p-inputNumber
-          *ngIf="field.type === 'inputNumber'"
           [id]="field.name"
           [formControlName]="field.name"
           [class]="field.styleClass || ''"
           class="form-control"
         ></p-inputNumber>
+        }
 
         <!-- Dropdown Field -->
+        @if (field.type === 'dropdown') {
         <p-select
-          *ngIf="field.type === 'dropdown'"
           [id]="field.name"
           [formControlName]="field.name"
           [options]="field.options || []"
           [class]="field.styleClass || ''"
           class="form-control"
         ></p-select>
+        }
 
         <!-- Calendar Field -->
+        @if (field.type === 'calendar') {
         <p-datepicker
-          *ngIf="field.type === 'calendar'"
           [id]="field.name"
           [formControlName]="field.name"
           [class]="field.styleClass || ''"
@@ -57,32 +56,35 @@
           [dateFormat]="field.dateFormat || 'mm/dd/yyyy'"
           [hourFormat]="field.hourFormat || '12'"
         ></p-datepicker>
+        }
 
         <!-- Checkbox Field -->
+        @if (field.type === 'checkbox') {
         <p-checkbox
-          *ngIf="field.type === 'checkbox'"
           [id]="field.name"
           [formControlName]="field.name"
           [class]="field.styleClass || ''"
           class="form-control"
         ></p-checkbox>
+        }
 
         <!-- Multi Select Field -->
+        @if (field.type === 'multiSelect') {
         <p-multiselect
-          *ngIf="field.type === 'multiSelect'"
           [id]="field.name"
           [formControlName]="field.name"
           [options]="field.options || []"
           [class]="field.styleClass || ''"
           class="form-control"
         ></p-multiselect>
+        }
       </p-floatlabel>
-      <p-floatlabel
-        variant="on"
-        *ngIf="field.type === 'password'"
-      >
+      }
+
+      <!-- Password Field -->
+      @if (field.type === 'password') {
+      <p-floatlabel variant="on">
         <p-password
-          *ngIf="field.type === 'password'"
           toggleMask="true"
           feedback="false"
           [id]="field.name"
@@ -93,29 +95,28 @@
         ></p-password>
         <label for="passwordField">{{ field.name | titlecase }}</label>
       </p-floatlabel>
+      }
+
       <!-- Error Message -->
       <div class="min-h-[1.25rem] ml-0">
-        <small
-          *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched"
-          class="p-error"
-        >
-          {{ getErrorMessage(field.name) }}
-        </small>
+        @if(form.get(field.name)?.invalid && form.get(field.name)?.touched){
+        <small class="p-error"> {{ getErrorMessage(field.name) }} </small>}
       </div>
     </div>
+    }
   </div>
 
   <!-- Form Buttons -->
-  <div
-    class="form-buttons"
-    *ngIf="config().buttons && config().buttons.length > 0"
-  >
+  @if(config().buttons && config().buttons.length > 0) {
+  <div class="form-buttons">
+    @for (button of config().buttons; track trackByCompositeKey($index, button)) {
     <p-button
-      *ngFor="let button of config().buttons"
       [type]="button.type || 'button'"
       [label]="button.label"
       [icon]="button.icon || ''"
       [disabled]="button.type === 'submit' && form.invalid"
     ></p-button>
+    }
   </div>
+  }
 </form>

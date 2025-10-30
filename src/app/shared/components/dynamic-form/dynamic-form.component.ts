@@ -1,4 +1,4 @@
-import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, input, type OnInit, output } from '@angular/core';
 import {
   FormBuilder,
@@ -8,7 +8,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ToasterMessageService } from '@app/core/services/toaster-message.service';
-import type { FormConfig, FormFieldConfig } from '@app/shared/models/form-config.model';
+import type {
+  FormButtonConfig,
+  FormConfig,
+  FormFieldConfig,
+} from '@app/shared/models/form-config.model';
 import { isMissing, notMissing } from '@app/shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -23,8 +27,6 @@ import { SelectModule } from 'primeng/select';
 @Component({
   selector: 'app-dynamic-form',
   imports: [
-    NgIf,
-    NgFor,
     ReactiveFormsModule,
     InputTextModule,
     InputNumberModule,
@@ -45,9 +47,9 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
   config = input.required<T>();
   formSubmit = output<unknown>();
   private readonly messageService = inject(ToasterMessageService);
+  private readonly formBuilder = inject(FormBuilder);
 
   form: FormGroup;
-  private readonly formBuilder = inject(FormBuilder);
 
   constructor() {
     this.form = this.formBuilder.group({});
@@ -61,6 +63,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     }
     this.buildForm();
   }
+
   private buildForm(): void {
     this.config().fields.forEach((field) => {
       this.form.addControl(
@@ -121,8 +124,6 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
       }
 
       // TODO: implement custom validator
-      // if (notMissing(field.validation.custom)) {
-      // }
     }
     return validators;
   }
@@ -150,7 +151,7 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
           case 'maxlength':
             return this.getMaxLengthError(field);
           case 'pattern':
-            return this.getPatternErrorMessage(control.errors[errorKey], field);
+            return this.getPatternErrorMessage(field, control?.value);
           case 'email':
             return this.getEmailError(field);
           default:
@@ -173,14 +174,12 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     }
   }
   getPatternErrorMessage(
-    patternError: { requiredPattern?: string },
-    field: FormFieldConfig<unknown> | undefined
+    field: FormFieldConfig<unknown> | undefined,
+    value: string | undefined
   ): string {
     // Handle array of patterns
     if (Array.isArray(field?.validation?.pattern)) {
-      const failedPattern = field.validation.pattern?.find((p) =>
-        new RegExp(p.value).test(patternError?.requiredPattern ?? '')
-      );
+      const failedPattern = field.validation.pattern?.find((p) => !p.value.test(value ?? ''));
       return failedPattern?.message || 'Invalid format';
     }
 
@@ -224,5 +223,9 @@ export class DynamicFormComponent<T extends FormConfig> implements OnInit {
     return typeof field?.validation?.required === 'string'
       ? field.validation.required
       : 'This field is required';
+  }
+
+  trackByCompositeKey(index: number, formField: FormFieldConfig<unknown> | FormButtonConfig) {
+    return `${formField.label}_${index}`;
   }
 }

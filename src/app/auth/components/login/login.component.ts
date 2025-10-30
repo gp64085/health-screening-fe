@@ -25,43 +25,41 @@ export class LoginComponent implements OnInit {
   readonly #router: Router = inject(Router);
   readonly #toasterMessageService: ToasterMessageService = inject(ToasterMessageService);
 
-  loginFormConfig?: FormConfig<LoginForm>;
+  protected readonly loginFormConfig: FormConfig<LoginForm> = {
+    id: 'user-login',
+    styleClass: 'flex flex-col justify-center gap-x-3 gap-y-3',
+    responsive: true,
+    fields: [
+      {
+        name: 'email',
+        label: 'Email',
+        type: 'inputText',
+        placeholder: 'Enter your email',
+        validation: EMAIL_FIELD_VALIDATION,
+      },
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
+        placeholder: 'Enter your password',
+        validation: PASSWORD_FIELD_VALIDATION,
+      },
+    ],
+    buttons: [
+      {
+        type: 'submit',
+        label: 'Login',
+        styleClass: 'p-button-primary',
+        icon: 'pi pi-check',
+      },
+    ],
+  };
 
   ngOnInit(): void {
     if (this.#authService.isLoggedIn()) {
       this.#router.navigate(['/dashboard']);
       return;
     }
-
-    this.loginFormConfig = {
-      id: 'user-login',
-      styleClass: 'flex flex-col justify-center gap-x-3 gap-y-3',
-      responsive: true,
-      fields: [
-        {
-          name: 'email',
-          label: 'Email',
-          type: 'inputText',
-          placeholder: 'Enter your email',
-          validation: EMAIL_FIELD_VALIDATION,
-        },
-        {
-          name: 'password',
-          label: 'Password',
-          type: 'password',
-          placeholder: 'Enter your password',
-          validation: PASSWORD_FIELD_VALIDATION,
-        },
-      ],
-      buttons: [
-        {
-          type: 'submit',
-          label: 'Login',
-          styleClass: 'p-button-primary',
-          icon: 'pi pi-check',
-        },
-      ],
-    };
   }
 
   onSubmit(loginFormData: unknown): void {
@@ -90,9 +88,10 @@ export class LoginComponent implements OnInit {
             this.#toasterMessageService.success({
               detail: response.message,
             });
-
-            this.#router.navigate(['/dashboard']);
           }
+        },
+        complete: () => {
+          this.#router.navigate(['/dashboard']);
         },
         error: (error: HttpErrorResponse) => {
           this.#toasterMessageService.error({

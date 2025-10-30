@@ -1,9 +1,39 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-100">
-  <div class="text-center">
-    <div class="mb-4">
-      <i class="pi pi-check-circle text-6xl text-green-500"></i>
-    </div>
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard is Working!</h1>
-    <p class="text-gray-600">The dashboard component is successfully loaded and functioning.</p>
+<header class="flex items-center justify-between px-4 py-2 bg-gray-200">
+  <h1 class="text-2xl font-bold">Dashboard</h1>
+</header>
+<main class="">
+  @if (isAdmin()) {
+  <div
+    class="admin-statics grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 flex-row items-center justify-center bg-gray-100 w-full gap-2 p-3"
+  >
+    <section class="card activity flex flex-col items-center justify-center h-full text-black">
+      <span class="text-2xl font-bold p-3">Users Data</span>
+      <p-chart
+        type="pie"
+        [data]="pieData()"
+        [height]="'380px'"
+        [width]="'400px'"
+      ></p-chart>
+    </section>
+    <section
+      class="card graph analytics flex flex-col items-center justify-center h-full text-black"
+    >
+      <span class="text-2xl font-bold p-3">Analytics</span>
+      <p-chart
+        type="pie"
+        [data]="pieData()"
+        class="w-full h-full"
+        [height]="'380px'"
+        [width]="'400px'"
+      ></p-chart>
+    </section>
   </div>
-</div>
+  <app-stat-card
+    title="test"
+    value="23"
+    icon="pi pi-users"
+    [loading]="false"
+    [growth]="10"
+  ></app-stat-card>
+  }
+</main>

@@ -1,22 +1,21 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, type Observable } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MenuService {
-  private readonly _isCollapsed = new BehaviorSubject<boolean>(false);
+  private _isCollapsed = signal<boolean>(false);
 
   /**
-   * Observable that emits the current collapsed state of the menu
+   * Get the current collapsed state as a readonly signal
    */
-  readonly isCollapsed$: Observable<boolean> = this._isCollapsed.asObservable();
+  collapsed = this._isCollapsed.asReadonly();
 
   /**
    * Get the current collapsed state synchronously
    */
   get isCollapsed(): boolean {
-    return this._isCollapsed.value;
+    return this._isCollapsed();
   }
 
   /**
@@ -25,7 +24,7 @@ export class MenuService {
    * be collapsed.
    */
   toggleCollapse(): void {
-    this._isCollapsed.next(!this._isCollapsed.value);
+    this._isCollapsed.set(!this._isCollapsed());
   }
 
   /**
@@ -33,20 +32,20 @@ export class MenuService {
    * @param collapsed - The desired collapsed state
    */
   setCollapsed(collapsed: boolean): void {
-    this._isCollapsed.next(collapsed);
+    this._isCollapsed.set(collapsed);
   }
 
   /**
    * Expand the menu
    */
   expand(): void {
-    this._isCollapsed.next(false);
+    this._isCollapsed.set(false);
   }
 
   /**
    * Collapse the menu
    */
   collapse(): void {
-    this._isCollapsed.next(true);
+    this._isCollapsed.set(true);
   }
 }
