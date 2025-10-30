@@ -1,49 +1,17 @@
-<nav
-  [class.w-64]="!(menuService.isCollapsed$ | async)"
-  [class.w-20]="menuService.isCollapsed$ | async"
-  class="bg-gray-900 text-white dark:bg-gray-800 h-full shadow-md transition-all duration-300"
->
-  <!-- Collapsable toggle button-->
-  <div class="p-4 flex justify-end">
-    <button
-      (click)="menuService.toggleCollapse()"
-      class="p-2 rounded-full hover:bg-gray-700 transition-colors duration-200 text-white flex items-center justify-center w-8 h-8"
-    >
-      @if (menuService.isCollapsed$ | async) {<!-- Hamburger menu icon when collapsed -->
-      <svg
-        class="w-5 h-5"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-          clip-rule="evenodd"
-        ></path>
-      </svg>
-      } @else {<!-- Close/X icon when expanded -->
-      <svg
-        class="w-5 h-5"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-          clip-rule="evenodd"
-        ></path>
-      </svg>
-      }
-    </button>
-  </div>
-
-  <!-- Menu items -->
-  <ul class="space-y-1 px-2">
-    @for(item of menuItems(); track item.label) { @if(item.roles?.includes(userRole())){
-    <app-sidebar-item
-      [menuItem]="item"
-      [isCollapsed]="(menuService.isCollapsed$ | async) || false"
-    ></app-sidebar-item>
-    } }
-  </ul>
-</nav>
+<div class="h-screen flex">
+  <nav class="bg-white text-black shadow-lg w-24 sm:w-28 md:w-32 flex-none px-2 py-4">
+    <!-- Menu items -->
+    <ul class="space-y-1">
+      @for(item of menuItems; track item.label) { @if(item.roles?.includes(currentRole)){
+      <li
+        appSidebarItem
+        [menuItem]="item"
+        class="hover:bg-blue-50 rounded-md transition-colors"
+      ></li>
+      } }
+    </ul>
+  </nav>
+  <main class="flex-1 overflow-auto">
+    <router-outlet></router-outlet>
+  </main>
+</div>

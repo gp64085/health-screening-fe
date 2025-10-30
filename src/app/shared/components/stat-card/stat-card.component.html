@@ -1,0 +1,35 @@
+<p-card
+  class="transition-transform transition-shadow duration-200 ease-in-out 
+         hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] 
+         [&.loading]:pointer-events-none"
+  [styleClass]="'stat-card' + (loading() ? ' loading' : '')"
+>
+  <div class="flex justify-between items-start">
+    <div>
+      <p class="text-sm font-medium text-gray-500 mb-2">{{ title() }}</p>
+      @if(loading()) {
+      <p-skeleton
+        width="80px"
+        height="32px"
+      ></p-skeleton>
+      } @else {<p class="text-3xl font-bold text-gray-900">{{ value() }}</p>} @if(description() &&
+      !loading()) {<p class="text-xs font-medium text-gray-500 mt-1">{{ description() }}</p>}
+    </div>
+    <div [class]="'p-3 rounded-full' + iconColor()">
+      <i [class]="icon() + ' text-white'"></i>
+    </div>
+  </div>
+  @if(growth() && !loading() ) {
+  <div class="flex items-center mt-3">
+    <i
+      [class]="'pi ' + (growth() > 0 ? 'pi-arrow-up text-green-500' : 'pi-arrow-down text-red-500') "
+    ></i>
+    <span
+      [class]="growth() > 0 ? 'text-green-500' : 'text-red-500'"
+      class="text sm font-medium ml-1"
+      >{{ growth() >= 0 ? '+' : '' }} {{ growth() }}</span
+    >
+    <span class="text-sm text-gray-500 ml-2">vs last month</span>
+  </div>
+  }
+</p-card>

@@ -1,7 +1,7 @@
 import type { Routes } from '@angular/router';
 import { adminGuard } from './core/guards/admin-role.guard';
 import { authGuard } from './core/guards/auth.guard';
-import { LayoutComponent } from './shared/components/layout/layout.component';
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 
 export const routes: Routes = [
   {
@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: LayoutComponent,
+    component: SidebarComponent,
     canActivate: [authGuard],
     children: [
       {
