@@ -27,7 +27,7 @@
     "@angular/forms": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
-    "@angular/router": "^18.2.0",
+    "@angular/router": "^18.2.14",
     "@primeng/themes": "^18.0.0-rc.1",
     "@tailwindcss/postcss": "^4.0.8",
     "@zxing/browser": "^0.1.4",
